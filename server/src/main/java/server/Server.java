@@ -5,6 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
     private ServerSocket server;
@@ -13,8 +16,16 @@ public class Server {
     private List<ClientHandler> clients;
     private AuthService authService;
 
+    public ExecutorService getExecService() {
+        return execService;
+    }
+
+    private ExecutorService execService;
+
     public Server() {
         clients = new CopyOnWriteArrayList<>();
+
+        execService = Executors.newFixedThreadPool(10);
 
         if (!PreparesForDB.connect()) {
             throw new RuntimeException("Нет подключения");
